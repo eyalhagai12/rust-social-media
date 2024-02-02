@@ -1,10 +1,11 @@
 use diesel::{
     deserialize::Queryable, prelude::Insertable, PgConnection, QueryResult, RunQueryDsl, Selectable, SelectableHelper
 };
+use serde::Serialize;
 
 use crate::{database::schema::users, schemas::new_user::NewUserSchema};
 
-#[derive(Queryable, Selectable, Debug)]
+#[derive(Queryable, Selectable, Debug, Serialize)]
 #[diesel(table_name = crate::database::schema::users)]
 pub struct User {
     pub id: i32,
