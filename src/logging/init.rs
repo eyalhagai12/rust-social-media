@@ -15,17 +15,15 @@ impl ElasticDrain {
     }
 }
 
-// impl Drain for ElasticDrain {
-//     type Ok = ();
-//     type Err = slog::Error;
+impl Drain for ElasticDrain {
+    type Ok = ();
+    type Err = slog::Error;
 
-//     fn log(
-//         &self,
-//         record: &slog::Record,
-//         values: &slog::OwnedKVList,
-//     ) -> std::result::Result<Self::Ok, Self::Err> {
-//         println!("{:?}", values.into());
-
-//         todo!()
-//     }
-// }
+    fn log(
+        &self,
+        record: &slog::Record,
+        values: &slog::OwnedKVList,
+    ) -> std::result::Result<Self::Ok, Self::Err> {
+        todo!()
+    }
+}
