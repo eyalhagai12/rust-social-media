@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::{env, fmt::Debug};
 
 use elasticsearch::{http::transport::Transport, Elasticsearch, IndexParts};
 use serde_json::json;
@@ -18,7 +18,8 @@ pub enum LogLevel {
 
 impl Logger {
     pub fn new(name: &str) -> Self { // Here i need to see how i put the url inside
-        let transport = Transport::single_node("http://localhost:9200").expect("failed to connect to elasticsearch");
+        let elastic_url = env::var("ELASTIC_SEARCH_URL").expect("ELASTIC_SEARCH_URL must be set");
+        let transport = Transport::single_node(&elastic_url).expect("failed to connect to elasticsearch");
         let client = Elasticsearch::new(transport);      
 
         Logger {
@@ -36,7 +37,7 @@ impl Logger {
         };
 
         let record = json!({
-            "file": self.name,
+            "module": self.name,
             "Level": level_str,
             "message": message,
         });
