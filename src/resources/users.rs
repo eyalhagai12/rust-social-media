@@ -1,5 +1,4 @@
 use actix_web::{web, HttpResponse, Responder};
-use log::debug;
 
 use crate::{
     database::{connection_pool::DbPool, models::users}, logging, responses::user::UserResponse, schemas::new_user::NewUserSchema
