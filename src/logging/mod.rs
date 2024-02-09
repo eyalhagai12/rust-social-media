@@ -17,7 +17,7 @@ pub enum LogLevel {
 }
 
 impl Logger {
-    pub fn new(name: &str) -> Self { // Here i need to see how i put the url inside
+    pub fn new(name: &str) -> Self { // should see how to make this not reconnect every time i need to log something
         let elastic_url = env::var("ELASTIC_SEARCH_URL").expect("ELASTIC_SEARCH_URL must be set");
         let transport = Transport::single_node(&elastic_url).expect("failed to connect to elasticsearch");
         let client = Elasticsearch::new(transport);      

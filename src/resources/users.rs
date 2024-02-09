@@ -2,12 +2,11 @@ use actix_web::{web, HttpResponse, Responder};
 use log::debug;
 
 use crate::{
-    database::{connection_pool::DbPool, models::users},
-    responses::user::UserResponse,
-    schemas::new_user::NewUserSchema,
+    database::{connection_pool::DbPool, models::users}, logging, responses::user::UserResponse, schemas::new_user::NewUserSchema
 };
 
 pub async fn register(pool: web::Data<DbPool>, schema: web::Json<NewUserSchema>) -> impl Responder {
+    let logger = logging::Logger::new("Users");
     let new_user_schema = schema.into_inner();
     let mut conn = pool.get().expect("Failed to get database connection");
 
@@ -15,7 +14,7 @@ pub async fn register(pool: web::Data<DbPool>, schema: web::Json<NewUserSchema>)
 
     match user_result {
         Ok(user) => {
-            debug!("{} was successfully registered", user.display_name);
+            logger.debug(format!("{} has been successfully registered!", user.display_name).as_str()).await.expect("failed to log user registration");
             let user_response = UserResponse {
                 display_name: user.display_name,
                 username: user.username,
@@ -23,8 +22,8 @@ pub async fn register(pool: web::Data<DbPool>, schema: web::Json<NewUserSchema>)
             };
             HttpResponse::Ok().json(user_response)
         }
-        Err(_) => {
-            debug!("registration failed");
+        Err(err) => {
+            logger.error(err.to_string().as_str()).await.expect("failed to log user registration failure");
             HttpResponse::InternalServerError().finish()
         }
     }
