@@ -1,5 +1,4 @@
 use actix_web::{HttpResponse, Responder};
-use log::debug;
 
 use crate::{logging, responses};
 
