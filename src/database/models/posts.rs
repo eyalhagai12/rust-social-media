@@ -1,5 +1,3 @@
-use std::fmt::Display;
-
 use actix_web::cookie::time::Time;
 use diesel::{deserialize::Queryable, Selectable};
 

@@ -1,9 +1,9 @@
 use diesel::{
-    deserialize::Queryable, prelude::Insertable, PgConnection, QueryResult, RunQueryDsl, Selectable, SelectableHelper
+    deserialize::Queryable, prelude::Insertable, query_dsl::methods::FilterDsl, ExpressionMethods, PgConnection, QueryResult, RunQueryDsl, Selectable, SelectableHelper
 };
 use serde::Serialize;
 
-use crate::{database::schema::users, schemas::new_user::NewUserSchema};
+use crate::{database::schema::{self, users::{self, password, username}}, schemas::{login_schema::UserLoginSchema, new_user::NewUserSchema}};
 
 #[derive(Queryable, Selectable, Debug, Serialize)]
 #[diesel(table_name = crate::database::schema::users)]
@@ -36,4 +36,11 @@ pub fn create_new_user(conn: &mut PgConnection, new_user_schema: NewUserSchema) 
         .values(&new_user)
         .returning(User::as_returning())
         .get_result(conn)
+}
+
+pub fn get_user_with_credentials(conn: &mut PgConnection, user_login_schema: UserLoginSchema) -> QueryResult<User> {
+    schema::users::table
+    .filter(username.eq(user_login_schema.username))
+    .filter(password.eq(user_login_schema.password))
+    .get_result(conn)
 }

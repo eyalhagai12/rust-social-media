@@ -5,7 +5,7 @@ use crate::{
 };
 
 pub async fn register(pool: web::Data<DbPool>, schema: web::Json<NewUserSchema>) -> impl Responder {
-    let logger = logging::Logger::new("Users");
+    let logger = logging::Logger::new("Register");
     let new_user_schema = schema.into_inner();
     let mut conn = pool.get().expect("Failed to get database connection");
 
@@ -18,7 +18,7 @@ pub async fn register(pool: web::Data<DbPool>, schema: web::Json<NewUserSchema>)
                 display_name: user.display_name,
                 username: user.username,
                 email: user.email,
-            };
+            }; // this can be deleted if i use `select` in the query instead
             HttpResponse::Ok().json(user_response)
         }
         Err(err) => {
