@@ -3,12 +3,13 @@ use env_logger::Env;
 use resources::healthcheck::healthcheck;
 use routes::config_routes;
 
+mod auth;
 mod database;
+mod logging;
 mod resources;
 mod responses;
 mod routes;
 mod schemas;
-mod logging;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
