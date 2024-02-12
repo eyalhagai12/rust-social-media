@@ -1,11 +1,11 @@
 use std::{env, fmt::Debug};
-
 use elasticsearch::{http::transport::Transport, Elasticsearch, IndexParts};
+use lazy_static::lazy_static;
+use log::{debug, error, info, warn};
 use serde_json::json;
 
 pub struct Logger {
     name: String,
-    elastic_client: elasticsearch::Elasticsearch,
 }
 
 #[derive(Debug)]
@@ -16,15 +16,18 @@ pub enum LogLevel {
     DEBUG,
 }
 
-impl Logger {
-    pub fn new(name: &str) -> Self { // should see how to make this not reconnect every time i need to log something
+lazy_static! {
+    static ref ELASTIC_CLIENT: Elasticsearch = {
         let elastic_url = env::var("ELASTIC_SEARCH_URL").expect("ELASTIC_SEARCH_URL must be set");
         let transport = Transport::single_node(&elastic_url).expect("failed to connect to elasticsearch");
-        let client = Elasticsearch::new(transport);      
+        Elasticsearch::new(transport)
+    };
+}
 
+impl Logger {
+    pub fn new(name: &str) -> Self {
         Logger {
             name: name.to_string(),
-            elastic_client: client
         }
     }
 
@@ -42,7 +45,7 @@ impl Logger {
             "message": message,
         });
 
-        self.elastic_client
+        ELASTIC_CLIENT
             .index(IndexParts::Index("logs"))
             .body(record)
             .send()
@@ -52,18 +55,22 @@ impl Logger {
     }
 
     pub async fn info(&self, message: &str) -> Result<(), elasticsearch::Error> {
+        info!("{}", message);
         self.log(LogLevel::INFO, message).await
     }
 
     pub async fn error(&self, message: &str) -> Result<(), elasticsearch::Error> {
+        error!("{}", message);
         self.log(LogLevel::ERROR, message).await
     }
 
     pub async fn warning(&self, message: &str) -> Result<(), elasticsearch::Error> {
+        warn!("{}", message);
         self.log(LogLevel::WARNING, message).await
     }
 
     pub async fn debug(&self, message: &str) -> Result<(), elasticsearch::Error> {
+        debug!("{}", message);
         self.log(LogLevel::DEBUG, message).await
     }
 }

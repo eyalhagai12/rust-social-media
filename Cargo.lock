@@ -1413,6 +1413,7 @@ dependencies = [
  "dotenvy",
  "elasticsearch",
  "env_logger",
+ "lazy_static",
  "log",
  "serde",
  "serde_json",

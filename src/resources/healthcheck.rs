@@ -11,7 +11,5 @@ pub async fn healthcheck() -> impl Responder {
     };
 
     logger.info("Service is healthy").await.expect("failed to log healthcheck");
-
-    debug!("Service Status: {}", response.status);
     HttpResponse::Ok().json(response)
 }
