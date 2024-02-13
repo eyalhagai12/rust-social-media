@@ -1,11 +1,11 @@
 use diesel::{
-    debug_query, pg::Pg, ExpressionMethods, PgConnection, QueryDsl, QueryResult, Queryable,
-    RunQueryDsl, Selectable,
+    ExpressionMethods, PgConnection, QueryDsl, QueryResult, Queryable, RunQueryDsl, Selectable,
 };
+use serde::Serialize;
 
-use crate::{database::schema::posts, responses::user};
+use crate::database::schema::posts;
 
-#[derive(Queryable, Selectable, Debug)]
+#[derive(Queryable, Selectable, Debug, Serialize)]
 #[diesel(table_name = posts)]
 pub struct Post {
     pub id: i32,
