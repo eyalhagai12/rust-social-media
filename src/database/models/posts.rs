@@ -1,6 +1,4 @@
-use diesel::{
-    ExpressionMethods, PgConnection, QueryDsl, QueryResult, Queryable, RunQueryDsl, Selectable,
-};
+use diesel::{Queryable, Selectable};
 use serde::Serialize;
 
 use crate::database::schema::posts;
