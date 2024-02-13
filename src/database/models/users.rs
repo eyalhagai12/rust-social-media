@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{database::schema::{self, users::{self, password, username}}, schemas::{login_schema::UserLoginSchema, new_user::NewUserSchema}};
 
-#[derive(Queryable, Selectable, Debug, Serialize, Deserialize)]
+#[derive(Queryable, Selectable, Debug, Serialize, Deserialize, Clone)]
 #[diesel(table_name = crate::database::schema::users)]
 pub struct User {
     pub id: i32,
