@@ -1,4 +1,5 @@
-use actix_web::{web, App, HttpServer};
+use actix_web::{dev::Service, web, App, HttpServer};
+use auth::middleware::auth_middleware;
 use env_logger::Env;
 use resources::healthcheck::healthcheck;
 use routes::config_routes;
@@ -19,6 +20,11 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
+            .wrap_fn(|req, srv| {
+                let request = auth_middleware(req);
+                
+                srv.call(request)
+            })
             .app_data(app_data.clone())
             .configure(config_routes)
             .route("/healthcheck", web::get().to(healthcheck))
