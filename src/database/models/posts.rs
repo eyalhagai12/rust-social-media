@@ -12,7 +12,3 @@ pub struct Post {
     pub description: String,
     pub user_id: i32,
 }
-
-pub fn get_all_user_posts(conn: &mut PgConnection, user_id: i32) -> QueryResult<Vec<Post>> {
-    posts::table.filter(posts::user_id.eq(user_id)).load(conn)
-}

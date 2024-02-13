@@ -1,6 +1,6 @@
 use actix_web::{web::{self, ReqData}, HttpResponse, Responder};
 use serde_json::json;
-use crate::{database::{connection_pool::DbPool, models::{posts::get_all_user_posts, users::User}}, logging::Logger};
+use crate::{database::{connection_pool::DbPool, models::users::User, queries::posts::get_all_user_posts}, logging::Logger};
 
 pub async fn get_user_posts(pool: web::Data<DbPool>, attached_user: ReqData<User>) -> impl Responder {
     let user = attached_user.into_inner();
