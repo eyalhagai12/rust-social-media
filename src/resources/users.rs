@@ -2,7 +2,7 @@ use actix_web::{web, HttpResponse, Responder};
 use serde_json::json;
 
 use crate::{
-    auth::jwt::encode_user, database::{connection_pool::DbPool, models::users}, logging, responses::user::UserResponse, schemas::{login_schema::UserLoginSchema, new_user::NewUserSchema}
+    auth::jwt::encode_user, database::{connection_pool::DbPool, models::users}, logging, schemas::{login_schema::UserLoginSchema, new_user::NewUserSchema}
 };
 
 pub async fn register(pool: web::Data<DbPool>, schema: web::Json<NewUserSchema>) -> impl Responder {

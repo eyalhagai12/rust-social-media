@@ -3,7 +3,7 @@ use diesel::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::{database::schema::{self, users::{self, password, username}}, schemas::{login_schema::UserLoginSchema, new_user::NewUserSchema}};
+use crate::{database::schema::users, schemas::{login_schema::UserLoginSchema, new_user::NewUserSchema}};
 
 #[derive(Queryable, Selectable, Debug, Serialize, Deserialize, Clone)]
 #[diesel(table_name = crate::database::schema::users)]
@@ -39,8 +39,8 @@ pub fn create_new_user(conn: &mut PgConnection, new_user_schema: NewUserSchema) 
 }
 
 pub fn get_user_with_credentials(conn: &mut PgConnection, user_login_schema: UserLoginSchema) -> QueryResult<User> {
-    schema::users::table
-    .filter(username.eq(user_login_schema.username))
-    .filter(password.eq(user_login_schema.password))
+    users::table
+    .filter(users::username.eq(user_login_schema.username))
+    .filter(users::password.eq(user_login_schema.password))
     .get_result(conn)
 }

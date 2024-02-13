@@ -22,7 +22,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap_fn(|req, srv| {
                 let request = auth_middleware(req);
-                
+
                 srv.call(request)
             })
             .app_data(app_data.clone())
