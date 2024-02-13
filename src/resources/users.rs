@@ -1,10 +1,8 @@
 use actix_web::{web, HttpResponse, Responder};
+use serde_json::json;
 
 use crate::{
-    database::{connection_pool::DbPool, models::users},
-    logging,
-    responses::user::UserResponse,
-    schemas::{login_schema::UserLoginSchema, new_user::NewUserSchema},
+    auth::jwt::encode_user, database::{connection_pool::DbPool, models::users}, logging, responses::user::UserResponse, schemas::{login_schema::UserLoginSchema, new_user::NewUserSchema}
 };
 
 pub async fn register(pool: web::Data<DbPool>, schema: web::Json<NewUserSchema>) -> impl Responder {
@@ -20,12 +18,8 @@ pub async fn register(pool: web::Data<DbPool>, schema: web::Json<NewUserSchema>)
                 .debug(format!("{} has been successfully registered!", user.display_name).as_str())
                 .await
                 .expect("failed to log user registration");
-            let user_response = UserResponse {
-                display_name: user.display_name,
-                username: user.username,
-                email: user.email,
-            }; // this can be deleted if i use `select` in the query instead
-            HttpResponse::Ok().json(user_response)
+            let token = encode_user(&user);
+            HttpResponse::Ok().json(json!({ "token": token }))
         }
         Err(err) => {
             logger
